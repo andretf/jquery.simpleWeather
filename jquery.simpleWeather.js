@@ -10,6 +10,19 @@
     }
   }
 
+  function parseLocation(locationValue) {
+    var testLocationValue = locationValue.split(',');
+
+    if (testLocationValue.length === 2) {
+      // or Array.prototype.every if only IE9+
+      if (!isNaN(parseFloat(testLocationValue[0])) && !isNaN(parseFloat(testLocationValue[1]))) {
+        locationValue = '(' + testLocationValue.join(',') + ')';
+      }
+    }
+
+    return locationValue;
+  }
+
   $.extend({
     simpleWeather: function(options){
       options = $.extend({
@@ -23,7 +36,7 @@
       var now = new Date();
       var weatherUrl = 'https://query.yahooapis.com/v1/public/yql?format=json&rnd='+now.getFullYear()+now.getMonth()+now.getDay()+now.getHours()+'&diagnostics=true&callback=?&q=';
       if(options.location !== '') {
-        weatherUrl += 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="'+options.location+'") and u="'+options.unit+'"';
+        weatherUrl += 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="'+parseLocation(options.location)+'") and u="'+options.unit+'"';
       } else if(options.woeid !== '') {
         weatherUrl += 'select * from weather.forecast where woeid='+options.woeid+' and u="'+options.unit+'"';
       } else {
