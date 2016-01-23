@@ -102,8 +102,21 @@
             }
 
             options.success(weather);
+          } else if (data !== null && data.query !== null && data.query.count === 0) {
+            options.error({
+              message: "Sorry, your location has no weather information. Please try again.",
+              error: "Location not found."
+            });
+          } else if (data !== null && data.query !== null && data.query.results !== null && data.query.results.channel !== null && data.query.results.channel.title !== null) {
+            options.error({
+              message: "There was an error retrieving the latest weather information. Please try again.",
+              error: data.query.results.channel.item.title
+            });
           } else {
-            options.error({message: "There was an error retrieving the latest weather information. Please try again.", error: data.query.results.channel.item.title});
+            options.error({
+              message: "There was an error retrieving the latest weather information. Please try again.",
+              error: "Unspecified error."
+            });
           }
         }
       );
